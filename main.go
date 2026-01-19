@@ -1,14 +1,18 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"embed"
 	"log"
+	"os"
+	"path/filepath"
 
 	_ "github.com/golang-migrate/migrate/v4/database/sqlite"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 	_ "modernc.org/sqlite"
 )
 
@@ -20,18 +24,31 @@ var icon []byte
 
 var DB *sql.DB
 
-func initDB() {
-	var err error
-	DB, err = sql.Open("sqlite", "./app.db")
+func appDataPath() string {
+	dir, err := os.UserConfigDir()
 	if err != nil {
 		log.Fatal(err)
+	}
+	return filepath.Join(dir, "desktop-todo-app")
+}
+
+func initDB(ctx context.Context) {
+	var err error
+
+	dbPath := filepath.Join(appDataPath(), "app.db")
+
+	runtime.LogInfof(ctx, "path: %s", dbPath)
+
+	DB, err = sql.Open("sqlite", dbPath+"?_busy_timeout=5000")
+	if err != nil {
+		runtime.LogErrorf(ctx, "error: %s", err.Error())
 	}
 
 	stmt := `
 	CREATE TABLE IF NOT EXISTS todos (
 		id TEXT PRIMARY KEY,
 		title TEXT,
-		desc TEXT,
+		description TEXT,
 		completed BOOLEAN,
 		createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
 		completedAt TEXT
@@ -39,15 +56,14 @@ func initDB() {
 	`
 	_, err = DB.Exec(stmt)
 	if err != nil {
-		log.Fatalf("Error creating table: %q: %s\n", err, stmt) // Log an error if table creation fails
+		runtime.LogErrorf(ctx, "Error creating table: %q: %s\n", err, stmt) // Log an error if table creation fails
 	}
+
 }
 
 func main() {
 	// Create an instance of the app structure
-	initDB()
 	app := NewApp()
-	repo := NewRepo()
 	// Create application with options
 	err := wails.Run(&options.App{
 		Title:            "todo app",
@@ -56,9 +72,9 @@ func main() {
 		Assets:           assets,
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
 		OnStartup:        app.startup,
+		// Debug:            options.Debug{OpenInspectorOnStartup: true},
 		Bind: []interface{}{
 			app,
-			repo,
 		},
 	})
 

@@ -34,7 +34,9 @@ export default function List({ items, handleUpdate }: ListProps) {
               >
                 {item.Title}
               </div>
-              <div className="text-sm text-muted-foreground">{item.Desc}</div>
+              <div className="text-sm text-muted-foreground">
+                {item.Description}
+              </div>
             </li>
           ))}
         </ul>
