@@ -3,7 +3,7 @@ export namespace main {
 	export class Todo {
 	    Id: string;
 	    Title: string;
-	    Desc: string;
+	    Description: string;
 	    Completed?: boolean;
 	    CreatedAt?: string;
 	    CompletedAt?: string;
@@ -16,7 +16,7 @@ export namespace main {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.Id = source["Id"];
 	        this.Title = source["Title"];
-	        this.Desc = source["Desc"];
+	        this.Description = source["Description"];
 	        this.Completed = source["Completed"];
 	        this.CreatedAt = source["CreatedAt"];
 	        this.CompletedAt = source["CompletedAt"];

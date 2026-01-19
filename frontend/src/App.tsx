@@ -4,13 +4,13 @@ import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 import type { KeyboardEvent } from "react";
-import { AddTodo, ListTodo } from "../wailsjs/go/main/repository";
+import { AddTodo, ListTodo } from "../wailsjs/go/main/App";
 import { main } from "../wailsjs/go/models";
 
 export type Todo = {
   id: string;
   title: string;
-  desc: string;
+  description: string;
   completed?: boolean;
   createdAt?: Date;
   completedAt?: Date;
@@ -33,17 +33,27 @@ const App = () => {
       const todo: main.Todo = {
         Id: uuid(),
         Title: cleanTitle,
-        Desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+        Description: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
       };
 
-      await AddTodo(todo);
-      const td = await ListTodo();
-      setTodos(td);
+      const res = await AddTodo(todo);
+      console.log(res);
+
       setTitle("");
     } catch (error) {
       console.log(error);
     }
   }
+
+  async function fetchTodo() {
+    try {
+      const td = await ListTodo();
+      console.log("aymmm", td);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       handleAddTodo();
@@ -62,6 +72,10 @@ const App = () => {
         />
         <Button className="cursor-pointer" onClick={handleAddTodo}>
           Add Todo
+        </Button>
+
+        <Button className="cursor-pointer" onClick={() => fetchTodo()}>
+          Fetch Todos
         </Button>
       </div>
       {todos && <List items={todos} handleUpdate={setTodos} />}
