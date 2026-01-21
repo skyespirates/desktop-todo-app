@@ -2,19 +2,18 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"skyes-app/internal/repository"
 )
 
 // App struct
 type App struct {
-	ctx context.Context
-	db  *sql.DB
+	ctx  context.Context
+	repo *repository.TodoRepo
 }
 
 // NewApp creates a new App application struct
-func NewApp(db *sql.DB) *App {
-	return &App{db: db}
+func NewApp(repo *repository.TodoRepo) *App {
+	return &App{repo: repo}
 }
 
 // startup is called at application startup
@@ -41,16 +40,13 @@ func (a *App) shutdown(ctx context.Context) {
 }
 
 func (a *App) CreateTodo(todo repository.Todo) error {
-	repo := repository.NewTodoRepo(a.db)
-	return repo.Create(todo)
+	return a.repo.Create(todo)
 }
 
 func (a *App) ListTodos() ([]repository.Todo, error) {
-	repo := repository.NewTodoRepo(a.db)
-	return repo.List()
+	return a.repo.List()
 }
 
 func (a *App) DeleteTodo(id string) error {
-	repo := repository.NewTodoRepo(a.db)
-	return repo.Delete(id)
+	return a.repo.Delete(id)
 }

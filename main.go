@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"skyes-app/internal/repository"
 	"skyes-app/internal/storage"
 
 	_ "github.com/golang-migrate/migrate/v4/database/sqlite"
@@ -75,7 +76,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	app := NewApp(db)
+	repo := repository.NewTodoRepo(db)
+
+	app := NewApp(repo)
 
 	// Create application with options
 	err = wails.Run(&options.App{
@@ -86,7 +89,7 @@ func main() {
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
 		OnStartup:        app.startup,
 		// Debug:            options.Debug{OpenInspectorOnStartup: true},
-		Bind: []interface{}{
+		Bind: []any{
 			app,
 		},
 	})
