@@ -6,6 +6,7 @@ import { v4 as uuid } from "uuid";
 import type { KeyboardEvent } from "react";
 import { repository } from "../wailsjs/go/models";
 import { CreateTodo, ListTodos } from "../wailsjs/go/main/App";
+import Modal from "@/components/Modal";
 
 export type Todo = {
   id: string;
@@ -37,7 +38,7 @@ export type Todo = {
 const App = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [title, setTitle] = useState("");
-
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     ListTodos()
       .then((list) => setTodos(list))
@@ -68,14 +69,14 @@ const App = () => {
     }
   }
 
-  async function fetchTodo() {
-    try {
-      const td = await ListTodos();
-      console.log("todos", td);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // async function fetchTodo() {
+  //   try {
+  //     const td = await ListTodos();
+  //     console.log("todos", td);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
@@ -97,12 +98,21 @@ const App = () => {
           Add Todo
         </Button>
 
-        <Button className="cursor-pointer" onClick={fetchTodo}>
+        {/* <Button className="cursor-pointer" onClick={fetchTodo}>
           Fetch Todos
-        </Button>
+        </Button> */}
+      </div>
+      <div>
+        <Modal open={open} setOpen={setOpen} />
       </div>
       {todos && (
-        <List items={todos} setTodos={setTodos} listTodos={ListTodos} />
+        <List
+          items={todos}
+          open={open}
+          setOpen={setOpen}
+          setTodos={setTodos}
+          listTodos={ListTodos}
+        />
       )}
     </div>
   );
