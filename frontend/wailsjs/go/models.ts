@@ -6,8 +6,8 @@ export namespace repository {
 	    description: string;
 	    Completed?: boolean;
 	    // Go type: time
-	    CreatedAt?: any;
-	    CompletedAt?: sql.NullTime;
+	    CreatedAt: any;
+	    CompletedAt: sql.NullTime;
 	
 	    static createFrom(source: any = {}) {
 	        return new Todo(source);
