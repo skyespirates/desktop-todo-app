@@ -16,12 +16,14 @@ type ListProps = {
   setOpen: Dispatch<SetStateAction<boolean>>;
   setTodos: Dispatch<SetStateAction<Todo[]>>;
   listTodos: () => Promise<Array<repository.Todo>>;
+  setSelectedTodo: Dispatch<SetStateAction<Todo>>;
 };
 
 export default function List({
   items,
   open,
   setOpen,
+  setSelectedTodo,
 }: // setTodos,
 // listTodos,
 ListProps) {
@@ -69,7 +71,10 @@ ListProps) {
                     variant="outline"
                     size="icon"
                     aria-label="Edit"
-                    onClick={() => setOpen(!open)}
+                    onClick={() => {
+                      setSelectedTodo(item);
+                      setOpen(!open);
+                    }}
                   >
                     <SquarePen />
                   </Button>

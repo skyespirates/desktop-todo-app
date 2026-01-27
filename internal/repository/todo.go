@@ -13,8 +13,8 @@ type Todo struct {
 	Title       string       `json:"title"`
 	Description string       `json:"description"`
 	Completed   bool         `json:"Completed,omitempty"`
-	CreatedAt   time.Time    `json:"CreatedAt,omitempty"`
-	CompletedAt sql.NullTime `json:"CompletedAt,omitempty"`
+	CreatedAt   time.Time    `json:"CreatedAt"`
+	CompletedAt sql.NullTime `json:"CompletedAt"`
 }
 
 type TodoRepo struct {

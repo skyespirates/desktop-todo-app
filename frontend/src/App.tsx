@@ -17,28 +17,13 @@ export type Todo = {
   completedAt?: Date;
 };
 
-// const todoList: Todo[] = [
-//   {
-//     id: uuid(),
-//     title: "running",
-//     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-//   },
-//   {
-//     id: uuid(),
-//     title: "walking",
-//     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-//   },
-//   {
-//     id: uuid(),
-//     title: "sleeping",
-//     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-//   },
-// ];
-
 const App = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [title, setTitle] = useState("");
   const [open, setOpen] = useState(false);
+  const [selectedTodo, setSelectedTodo] = useState<Todo>({} as Todo);
+
+  useState;
   useEffect(() => {
     ListTodos()
       .then((list) => setTodos(list))
@@ -103,7 +88,7 @@ const App = () => {
         </Button> */}
       </div>
       <div>
-        <Modal open={open} setOpen={setOpen} />
+        <Modal open={open} setOpen={setOpen} todo={selectedTodo} />
       </div>
       {todos && (
         <List
@@ -112,6 +97,7 @@ const App = () => {
           setOpen={setOpen}
           setTodos={setTodos}
           listTodos={ListTodos}
+          setSelectedTodo={setSelectedTodo}
         />
       )}
     </div>
