@@ -3,6 +3,7 @@ package storage
 
 import (
 	"database/sql"
+	"log"
 	"path/filepath"
 
 	_ "modernc.org/sqlite"
@@ -15,6 +16,7 @@ func OpenDB(appName string) (*sql.DB, error) {
 	}
 
 	dbPath := filepath.Join(dir, "app.db")
+	log.Printf("DATABASE PATH: %s", dbPath)
 
 	db, err := sql.Open("sqlite", dbPath)
 	if err != nil {

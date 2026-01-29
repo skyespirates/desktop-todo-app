@@ -12,9 +12,16 @@ type Todo struct {
 	Id          string       `json:"id"`
 	Title       string       `json:"title"`
 	Description string       `json:"description"`
-	Completed   bool         `json:"Completed,omitempty"`
-	CreatedAt   time.Time    `json:"CreatedAt"`
-	CompletedAt sql.NullTime `json:"CompletedAt"`
+	Completed   bool         `json:"completed"`
+	CreatedAt   string       `json:"createdAt"`
+	CompletedAt sql.NullTime `json:"completedAt"`
+}
+
+type UpdateTodoInput struct {
+	Id          string `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Completed   bool   `json:"completed"`
 }
 
 type TodoRepo struct {
@@ -26,8 +33,7 @@ func NewTodoRepo(db *sql.DB) *TodoRepo {
 }
 
 func (r *TodoRepo) Create(todo Todo) error {
-	log.Printf("todo: %+v", todo)
-	query := `INSERT INTO todos(id, title, description, createdAt) VALUES(?, ?, ?, DATE('now'))`
+	query := `INSERT INTO todos(id, title, description) VALUES(?, ?, ?)`
 	args := []any{todo.Id, todo.Title, todo.Description}
 
 	_, err := r.db.Exec(query, args...)
@@ -70,6 +76,53 @@ func (r *TodoRepo) Delete(id string) error {
 	}
 	if affectedRows == 0 {
 		return errors.New("delete todo is failed")
+	}
+
+	return nil
+}
+
+func (r *TodoRepo) Update(todo UpdateTodoInput) error {
+	query := `SELECT id, title, description, completed, createdAt, completedAt FROM todos where id = ?`
+	args := []any{todo.Id}
+
+	var t Todo
+	err := r.db.QueryRow(query, args...).Scan(&t.Id, &t.Title, &t.Description, &t.Completed, &t.CreatedAt, &t.CompletedAt)
+	if err != nil {
+		return err
+	}
+
+	if t.Title != todo.Title {
+		t.Title = todo.Title
+	}
+
+	if t.Description != todo.Description {
+		t.Description = todo.Description
+	}
+
+	if t.Completed != todo.Completed {
+		t.Completed = todo.Completed
+	}
+
+	completedAt := sql.NullTime{
+		Time:  time.Now(),
+		Valid: true,
+	}
+
+	updateQuery := `UPDATE todos SET title = ?, description = ?, completed = ?, completedAt = ? WHERE id = ?`
+	updateArgs := []any{t.Title, t.Description, t.Completed, completedAt, t.Id}
+
+	result, err := r.db.Exec(updateQuery, updateArgs...)
+	if err != nil {
+		log.Printf("error execute update: %s", err.Error())
+		return err
+	}
+	affectedRows, err := result.RowsAffected()
+	if err != nil {
+		log.Printf("error affected rows: %s", err.Error())
+		return err
+	}
+	if affectedRows == 0 {
+		return errors.New("updated failed")
 	}
 
 	return nil
