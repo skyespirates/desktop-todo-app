@@ -5,11 +5,7 @@ import type { Todo } from "@/App";
 import type { Dispatch, SetStateAction } from "react";
 import { SquarePen, Trash } from "lucide-react";
 import { DeleteTodo } from "../../wailsjs/go/main/App";
-
-// import { ScrollArea } from "@/components/ui/scroll-area";
-// import { main } from "../../wailsjs/go/models";
-// import { DeleteTodo } from "../../wailsjs/go/main/App";
-import type { repository } from "wailsjs/go/models";
+import type { repository } from "../../wailsjs/go/models";
 
 type ListProps = {
   items: Todo[];
@@ -53,7 +49,7 @@ export default function List({
               key={item.id}
               className="p-4 flex items-center gap-2"
             >
-              <div className="text">
+              <div className="text flex-1">
                 <div
                   className={` ${
                     false ? "decoration-dashed" : "text-blue-600"
@@ -64,6 +60,9 @@ export default function List({
                 <div className="text-sm text-muted-foreground">
                   {item.description}
                 </div>
+                <div className="text-sm text-muted-foreground">
+                  created at: {new Date(item.createdAt + "Z").toLocaleString()}
+                </div>
               </div>
               <div className="button-grup">
                 <ButtonGroup className="hidden sm:flex">
@@ -73,6 +72,7 @@ export default function List({
                     size="icon"
                     aria-label="Edit"
                     onClick={() => {
+                      console.log(item);
                       setSelectedTodo(item);
                       setOpen(!open);
                     }}

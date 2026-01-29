@@ -13,3 +13,7 @@ export function DeleteTodo(arg1) {
 export function ListTodos() {
   return window['go']['main']['App']['ListTodos']();
 }
+
+export function UpdateTodo(arg1) {
+  return window['go']['main']['App']['UpdateTodo'](arg1);
+}

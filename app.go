@@ -50,3 +50,7 @@ func (a *App) ListTodos() ([]repository.Todo, error) {
 func (a *App) DeleteTodo(id string) error {
 	return a.repo.Delete(id)
 }
+
+func (a *App) UpdateTodo(todo repository.UpdateTodoInput) error {
+	return a.repo.Update(todo)
+}

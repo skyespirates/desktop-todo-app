@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,7 +8,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  // DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,28 +15,42 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field } from "@/components/ui/field";
 import { type Todo } from "@/App";
+import { UpdateTodo, ListTodos } from "../../wailsjs/go/main/App";
 
 type ModalProps = {
   open: boolean;
   todo: Todo;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
 };
 
-const Modal = ({ open, todo, setOpen }: ModalProps) => {
+const Modal = ({ open, todo, setOpen, setTodos }: ModalProps) => {
   const [title, setTitle] = useState(todo.title);
   const [description, setDescription] = useState(todo.description);
   const [completed, setCompleted] = useState(todo.completed);
 
-  function handleClick() {
-    console.log("result");
+  useEffect(() => {
+    if (!todo) return;
+    setTitle(todo.title);
+    setDescription(todo.description);
+    setCompleted(todo.completed);
+  }, [todo]);
 
+  function handleClick() {
     const data = {
       id: todo.id,
       title,
       description,
       completed,
     };
-    console.log("data", data);
+
+    UpdateTodo(data)
+      .then((res) => {
+        console.log("Success", res);
+        setOpen((prev) => !prev);
+        ListTodos().then((todos) => setTodos(todos));
+      })
+      .catch((err) => console.log("Error", err));
   }
 
   return (

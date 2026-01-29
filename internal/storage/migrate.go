@@ -10,7 +10,7 @@ func Migrate(db *sql.DB) error {
 		title TEXT,
 		description TEXT,
 		completed BOOLEAN NOT NULL DEFAULT 0,
-		createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+		createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		completedAt DATETIME
 	);
 	`

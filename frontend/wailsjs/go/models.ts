@@ -4,10 +4,9 @@ export namespace repository {
 	    id: string;
 	    title: string;
 	    description: string;
-	    Completed?: boolean;
-	    // Go type: time
-	    CreatedAt: any;
-	    CompletedAt: sql.NullTime;
+	    completed: boolean;
+	    createdAt: string;
+	    completedAt: sql.NullTime;
 	
 	    static createFrom(source: any = {}) {
 	        return new Todo(source);
@@ -18,9 +17,9 @@ export namespace repository {
 	        this.id = source["id"];
 	        this.title = source["title"];
 	        this.description = source["description"];
-	        this.Completed = source["Completed"];
-	        this.CreatedAt = this.convertValues(source["CreatedAt"], null);
-	        this.CompletedAt = this.convertValues(source["CompletedAt"], sql.NullTime);
+	        this.completed = source["completed"];
+	        this.createdAt = source["createdAt"];
+	        this.completedAt = this.convertValues(source["completedAt"], sql.NullTime);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -40,6 +39,24 @@ export namespace repository {
 		    }
 		    return a;
 		}
+	}
+	export class UpdateTodoInput {
+	    id: string;
+	    title: string;
+	    description: string;
+	    completed: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new UpdateTodoInput(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.title = source["title"];
+	        this.description = source["description"];
+	        this.completed = source["completed"];
+	    }
 	}
 
 }

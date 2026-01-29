@@ -7,3 +7,5 @@ export function CreateTodo(arg1:repository.Todo):Promise<void>;
 export function DeleteTodo(arg1:string):Promise<void>;
 
 export function ListTodos():Promise<Array<repository.Todo>>;
+
+export function UpdateTodo(arg1:repository.UpdateTodoInput):Promise<void>;
